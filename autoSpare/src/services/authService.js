@@ -30,7 +30,7 @@ class AuthService{
         return newUser;
     }
 
-
+    //giriş yapma
     async login(email,password){
         //İş kuralı 1 : Kullanıcı sistemde aktif olarak var mı?
         const user = await userRepository.findByEmail(email);
