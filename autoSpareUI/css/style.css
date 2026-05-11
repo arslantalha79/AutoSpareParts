@@ -1,0 +1,248 @@
+/* --- CSS Değişkenleri (Premium Otomotiv Paleti) --- */
+:root {
+    --primary-color: #0f172a; /* Ultra Koyu Mavi (Neredeyse Siyah) */
+    --secondary-bg: #1e293b;  /* Koyu Kart Arka Planı */
+    --accent-color: #f97316;   /* Canlı Mnemonic Turuncu (Premium Vurgu) */
+    --accent-hover: #ea580c;
+    --text-main: #f1f5f9;     /* Açık Gri/Beyaz Metin */
+    --text-muted: #94a3b8;    /* Sönük Metin */
+    --border-color: #334155;
+    --bg-pattern: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"><g fill="%231e293b" fill-opacity="0.2"><path d="M0 0h80v80H0z"/><path d="M40 0l40 40-40 40L0 40z"/><path d="M10 10l60 60"/><path d="M10 70l60-60"/></g></svg>'); /* Hafif şematik doku */
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- Temel Sıfırlama --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: var(--primary-color);
+    background-image: var(--bg-pattern); /* Arka plana doku */
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* --- Navbar Tasarımı --- */
+.navbar {
+    background-color: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(10px); /* Cam efekti */
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.2rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar .logo {
+    font-size: 1.6rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: -1px;
+}
+
+.navbar .logo i {
+    color: var(--accent-color);
+}
+
+.logo-accent {
+    color: var(--accent-color);
+}
+
+.nav-links {
+    display: flex;
+    gap: 10px;
+}
+
+.nav-link-btn {
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-link-btn:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: white;
+}
+
+.nav-link-btn.active {
+    background-color: rgba(249, 115, 22, 0.1);
+    color: var(--accent-color);
+    border: 1px solid rgba(249, 115, 22, 0.2);
+}
+
+/* --- Main Content (SPA Container) --- */
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 1rem;
+}
+
+/* --- Premium Auth Card --- */
+.auth-card {
+    background-color: var(--secondary-bg);
+    padding: 50px;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 460px;
+    position: relative;
+    overflow: hidden;
+    /* Fade-in animasyonu */
+    animation: cardSlideIn 0.6s ease-out; 
+}
+
+@keyframes cardSlideIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Kartın üstüne ince turuncu çizgi */
+.auth-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color), var(--primary-color));
+}
+
+.auth-card h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    color: white;
+    font-weight: 600;
+    font-size: 1.8rem;
+}
+
+.auth-card p.subtitle {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-bottom: 35px;
+    font-weight: 300;
+}
+
+/* --- Modern Input Alanları (Premium Industrial) --- */
+.input-group {
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.input-group i {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    transition: var(--transition);
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px 15px 15px 55px; /* İkon için soldan boşluk */
+    background-color: rgba(15, 23, 42, 0.5); /* Koyu input arka planı */
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 1rem;
+    color: white;
+    outline: none;
+    transition: var(--transition);
+}
+
+/* İnput Placeholder Rengi */
+.input-group input::placeholder {
+    color: #475569;
+}
+
+/* Focus Durumu */
+.input-group input:focus {
+    border-color: var(--accent-color);
+    background-color: rgba(15, 23, 42, 0.8);
+    box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15);
+}
+
+/* Focus olduğunda ikon rengi değişsin */
+.input-group input:focus + i, 
+.input-group input:not(:placeholder-shown) + i {
+    color: var(--accent-color);
+}
+
+/* --- Kurumsal Buton (Mclaren Style) --- */
+.submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 14px 0 rgba(249, 115, 22, 0.4);
+}
+
+.submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px 0 rgba(249, 115, 22, 0.5);
+}
+
+.submit-btn:active {
+    transform: translateY(-1px);
+}
+
+/* Yükleniyor Spinnner stili */
+.fa-spinner {
+    font-size: 1.2rem;
+}
+
+/* --- SweetAlert2 Premium Tema Uyarlaması (Arka Plan Overlay) --- */
+/* SweetAlert overlay (backdrop) rengini daha koyu yapıyoruz */
+.swal2-backdrop-show {
+    background: rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: blur(4px);
+}
+
+/* SweetAlert Modal Tasarımı */
+.swal2-popup {
+    background: var(--secondary-bg) !important;
+    color: var(--text-main) !important;
+    border-radius: 16px !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.swal2-title {
+    color: white !important;
+}
+
+.swal2-styled.swal2-confirm {
+    background-color: var(--accent-color) !important;
+    border-radius: 8px !important;
+}
