@@ -69,7 +69,7 @@ const RegisterView = {
                 await Notification.success('Kayıt Başarılı! Giriş yapabilirsiniz.');
 
                 // Başarılıysa formu temizle
-                form.reset();
+                window.location.hash = '#login';
 
             } catch (error) {
                 Notification.error(error.message);

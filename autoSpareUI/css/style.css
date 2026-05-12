@@ -91,10 +91,9 @@ body {
 /* --- Main Content (SPA Container) --- */
 .main-content {
     flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 3rem 1rem;
+    display: block; /* Flex center iptal edildi, içerik yukarıdan başlasın */
+    padding: 3rem 5%; /* Kenar boşlukları navbar ile hizalandı */
+    width: 100%;
 }
 
 /* --- Premium Auth Card --- */
@@ -108,7 +107,10 @@ body {
     max-width: 460px;
     position: relative;
     overflow: hidden;
-    /* Fade-in animasyonu */
+    
+    /* YENİ: Main content flex iptal olunca, kartın kendini ortalaması için */
+    margin: 5vh auto; 
+    
     animation: cardSlideIn 0.6s ease-out; 
 }
 
@@ -158,6 +160,10 @@ body {
     color: var(--text-muted);
     font-size: 1.1rem;
     transition: var(--transition);
+}
+
+.fa-group{
+    top: calc(50% + 12px) !important;
 }
 
 .input-group input {
@@ -252,4 +258,83 @@ body {
     border-color: var(--accent-color) !important;
     background: rgba(249, 115, 22, 0.1) !important;
     transform: translateY(-5px);
+}
+
+.brand-explorer-card:hover, .model-explorer-card:hover {
+    border-color: var(--accent-color) !important;
+    background: rgba(249, 115, 22, 0.1) !important;
+    transform: translateY(-5px);
+}
+
+
+/* --- YENİ: Admin Panel Layout --- */
+.app-layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden; /* Dışarı taşmayı engelle */
+}
+
+/* Sidebar Tasarımı */
+.sidebar {
+    width: 260px;
+    background-color: rgba(15, 23, 42, 0.95);
+    border-right: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    transition: var(--transition);
+}
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.menu-label {
+    color: #64748b;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 0 25px;
+    margin-bottom: 10px;
+}
+
+.sidebar-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 14px 25px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-left: 3px solid transparent;
+    transition: var(--transition);
+}
+
+.sidebar-link i {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar-link:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* Aktif Sayfa Vurgusu */
+.sidebar-link.active {
+    color: var(--accent-color);
+    background: rgba(249, 115, 22, 0.1);
+    border-left-color: var(--accent-color);
+}
+
+/* Ana İçerik Kaydırma (Scroll) Ayarı */
+.main-content {
+    flex: 1;
+    overflow-y: auto; /* Sadece içerik kaysın, sidebar sabit kalsın */
+    padding: 2rem 3rem;
 }

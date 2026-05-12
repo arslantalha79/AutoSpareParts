@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path'); // <-- İŞTE EKSİK OLAN SİHİRLİ SATIR BU!
+const path = require('path');
 require('dotenv').config();
 const pool = require('./config/db'); //Veritabanı bağlantısını yaptığım dosyayı çağırıyorum.
 
@@ -13,7 +13,6 @@ const sparePartRoutes = require('./routes/sparePartRoutes');
 
 // Swagger config dosyasını çağırıyoruz
 const { swaggerUi, specs } = require('./config/swagger');
-
 const app = express();
 
 //Middlewarelerim

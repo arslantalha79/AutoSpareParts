@@ -1,0 +1,101 @@
+import ApiService from '../services/api.js';
+import Notification from '../utils/notification.js';
+
+const PartDetailView = {
+    render: () => {
+        return `
+            <div style="max-width: 1000px; margin: 0 auto; width: 100%;">
+                <a href="#dashboard" class="nav-link-btn" style="display: inline-flex; margin-bottom: 20px; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border-color); width: fit-content;">
+                    <i class="fa-solid fa-arrow-left"></i> Panele Dön
+                </a>
+                
+                <div id="detail-content">
+                    <div style="text-align:center; padding: 50px;"><i class="fa-solid fa-spinner fa-spin fa-2x"></i> Veriler Çekiliyor...</div>
+                </div>
+            </div>
+        `;
+    },
+
+    afterRender: async () => {
+        // URL'den "?id=5" değerini yakalıyoruz
+        const params = new URLSearchParams(window.location.hash.split('?')[1]);
+        const partId = params.get('id');
+
+        if (!partId) {
+            Notification.error("Parça ID bulunamadı.");
+            window.location.hash = '#dashboard';
+            return;
+        }
+
+        try {
+            // Backend'den parçaları çek ve ilgili ID'yi bul
+            const parts = await ApiService.get('/spare-parts');
+            const part = parts.find(p => p.id == partId);
+
+            if (!part) {
+                Notification.error("Parça veritabanında bulunamadı.");
+                window.location.hash = '#dashboard';
+                return;
+            }
+
+            // Resim ve Renk Ayarlamaları
+            const imgSrc = part.image_url ? `http://localhost:3000${part.image_url}` : 'https://cdn-icons-png.flaticon.com/512/3202/3202926.png';
+            const isStockOut = part.stock_quantity === 0;
+            const stockColor = isStockOut ? '#ef4444' : '#10b981'; // Kırmızı : Yeşil
+            const stockText = isStockOut ? 'Stok Tükendi' : `${part.stock_quantity} Adet Stokta`;
+            const stockIcon = isStockOut ? 'fa-xmark' : 'fa-check';
+
+            // Ekrana Şıkır Şıkır Basma İşlemi
+            document.getElementById('detail-content').innerHTML = `
+                <div style="display: flex; flex-wrap: wrap; gap: 40px; background: rgba(15, 23, 42, 0.7); padding: 40px; border-radius: 20px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                    
+                    <div style="flex: 1; min-width: 300px; display: flex; justify-content: center; align-items: center; background: rgba(255,255,255,0.02); padding: 30px; border-radius: 16px; border: 1px dashed var(--border-color);">
+                        <img src="${imgSrc}" style="max-width: 100%; max-height: 350px; object-fit: contain; filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.5)); transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    </div>
+
+                    <div style="flex: 1.2; min-width: 300px; display: flex; flex-direction: column; gap: 20px;">
+                        
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <span style="background: rgba(249, 115, 22, 0.15); color: var(--accent-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; border: 1px solid rgba(249, 115, 22, 0.3);">
+                                <i class="fa-solid fa-car-side"></i> ${part.brand_name} ${part.model_name}
+                            </span>
+                            <span style="background: rgba(59, 130, 246, 0.15); color: #3b82f6; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; border: 1px solid rgba(59, 130, 246, 0.3);">
+                                <i class="fa-solid fa-layer-group"></i> ${part.category_name}
+                            </span>
+                        </div>
+                        
+                        <div>
+                            <h1 style="font-size: 2.2rem; color: white; margin: 0; line-height: 1.2;">${part.name}</h1>
+                            <div style="font-family: monospace; color: var(--text-muted); font-size: 1rem; margin-top: 8px;">
+                                <i class="fa-solid fa-barcode"></i> SKU: ${part.sku}
+                            </div>
+                        </div>
+                        
+                        <div style="background: var(--primary-color); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                            <div style="font-size: 2.5rem; font-weight: 700; color: white;">
+                                ${parseFloat(part.price).toLocaleString('tr-TR')} <span style="font-size: 1.5rem; color: var(--accent-color);">₺</span>
+                            </div>
+                            <div style="background: ${stockColor}15; color: ${stockColor}; padding: 10px 18px; border-radius: 10px; border: 1px solid ${stockColor}40; font-weight: 600; font-size: 1rem;">
+                                <i class="fa-solid ${stockIcon}"></i> ${stockText}
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 10px;">
+                            <h3 style="color: white; font-size: 1.1rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-circle-info" style="color: var(--accent-color);"></i> Ürün Açıklaması
+                            </h3>
+                            <p style="color: #cbd5e1; line-height: 1.7; font-size: 0.95rem; background: rgba(255,255,255,0.02); padding: 15px; border-radius: 10px;">
+                                ${part.description || 'Bu yedek parça için detaylı bir açıklama girilmemiştir.'}
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            `;
+        } catch (error) {
+            Notification.error("Veriler alınırken bir sorun oluştu.");
+        }
+    }
+};
+
+export default PartDetailView;
