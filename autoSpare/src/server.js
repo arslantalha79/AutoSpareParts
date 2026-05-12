@@ -8,6 +8,7 @@ const pool = require('./config/db'); //Veritabanı bağlantısını yaptığım 
 const authRoutes = require('./routes/authRoutes');
 const brandRoutes = require('./routes/brandRoutes');
 const modelRoutes = require('./routes/modelRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
 
 // Swagger config dosyasını çağırıyoruz
 const { swaggerUi, specs } = require('./config/swagger');
@@ -28,6 +29,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/api/auth', authRoutes);
 app.use('/api/brands', brandRoutes);
 app.use('/api/models', modelRoutes);
+app.use('/api/categories', categoryRoutes);
 
 const PORT = process.env.PORT || 3000;
 
