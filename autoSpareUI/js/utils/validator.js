@@ -13,6 +13,12 @@ const Validator = {
     // Alan boş bırakılmış mı?
     isEmpty: (value) => {
         return value.trim() === '';
+    },
+
+
+    isPositiveNumber: (value) => {
+        const num = parseFloat(value);
+        return !isNaN(num) && num >= 0;
     }
 };
 

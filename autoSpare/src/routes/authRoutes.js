@@ -1,7 +1,11 @@
 const express = require('express');
-const { body } = require('express-validator');
-const validateRequest = require('../middlewares/validationMiddleware');
 const authController = require('../controllers/authController');
+
+const { 
+    validateRequest, 
+    registerValidation, 
+    loginValidation 
+} = require('../middlewares/validationMiddleware');
 
 const router = express.Router();
 
@@ -37,12 +41,7 @@ const router = express.Router();
  *       400:
  *         description: İş kuralı hatası (Validasyon)
  */
-router.post('/register', [
-    // Gelen girdilerin kurallarını yazıyoruz:
-    body('fullName').notEmpty().withMessage('Ad soyad alanı boş bırakılamaz.'),
-    body('email').isEmail().withMessage('Lütfen geçerli bir email adresi giriniz.'),
-    body('password').isLength({ min: 8 }).withMessage('Şifre en az 8 karakter olmalıdır.')
-], validateRequest, authController.register);
+router.post('/register', registerValidation, validateRequest, authController.register);
 
 /**
  * @swagger
@@ -72,9 +71,6 @@ router.post('/register', [
  *       400:
  *         description: Hatalı giriş
  */
-router.post('/login', [
-    body('email').isEmail().withMessage('Lütfen geçerli bir email adresi giriniz.'),
-    body('password').notEmpty().withMessage('Şifre alanı boş bırakılamaz.')
-], validateRequest, authController.login);
+router.post('/login', loginValidation, validateRequest, authController.login);
 
 module.exports = router;

@@ -60,8 +60,8 @@ const LoginView = {
                 localStorage.setItem('token', response.token);
                 localStorage.setItem('user', JSON.stringify(response.user));
 
-                // İleride Dashboard'a yönlendirme buraya gelecek
-                console.log("Token Kaydedildi.");
+                //dashboarda yönlendirelim
+                window.location.hash = '#dashboard';
 
             } catch (error) {
                 // Backend hatasını Error Modal ile göster

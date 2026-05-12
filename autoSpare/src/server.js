@@ -9,6 +9,7 @@ const authRoutes = require('./routes/authRoutes');
 const brandRoutes = require('./routes/brandRoutes');
 const modelRoutes = require('./routes/modelRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
+const sparePartRoutes = require('./routes/sparePartRoutes');
 
 // Swagger config dosyasını çağırıyoruz
 const { swaggerUi, specs } = require('./config/swagger');
@@ -30,6 +31,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/brands', brandRoutes);
 app.use('/api/models', modelRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/spare-parts', sparePartRoutes);
+
 
 const PORT = process.env.PORT || 3000;
 

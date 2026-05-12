@@ -2,6 +2,10 @@
 node_modules/
 autoSpare/node_modules/
 
+# images
+uploads
+autoSpare/uploads
+
 # Çevresel Değişkenler
 .env
 autoSpare/.env

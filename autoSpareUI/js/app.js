@@ -1,10 +1,14 @@
+import DashboardView from './views/dashboard.js';
 import LoginView from './views/login.js';
 import RegisterView from './views/register.js';
+import SparePartsView from './views/spare-parts.js';
 
 //url-arayüz eşleştirmesi
 const routes = {
     'login': LoginView,
-    'register': RegisterView
+    'register': RegisterView,
+    'spare-parts': SparePartsView,
+    'dashboard': DashboardView
 };
 
 // Uygulamanın kalbi olan div'i yakalıyoruz. React'teki <App></App> tag mantığı

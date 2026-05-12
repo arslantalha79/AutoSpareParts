@@ -246,3 +246,10 @@ body {
     background-color: var(--accent-color) !important;
     border-radius: 8px !important;
 }
+
+
+.brand-card:hover, .model-card:hover {
+    border-color: var(--accent-color) !important;
+    background: rgba(249, 115, 22, 0.1) !important;
+    transform: translateY(-5px);
+}
