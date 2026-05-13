@@ -22,8 +22,12 @@ class SparePartController {
 
     //db'deki kayıtlı yedek parçaları listeliyoruz.
     getAll = async (req, res) => {
-        const parts = await sparePartService.listAllParts();
-        res.status(200).json(parts);
+        try {
+            const parts = await sparePartService.listAllParts();
+            res.status(200).json(parts);
+        } catch (error) {
+            res.status(500).json({ error: "Parçalar listelenirken bir hata oluştu." });
+        }
     };
 
     //sisteme kayıtlı yedek parçayı siliyoruz.

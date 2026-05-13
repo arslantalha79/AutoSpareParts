@@ -62,7 +62,7 @@ const SparePartsView = {
                 });
             });
 
-        } catch (error) { Notification.error("Markalar yüklenemedi."); }
+        } catch (error) { await Notification.error("Markalar yüklenemedi."); }
     },
 
     // --- ADIM 2: MODELLERİ YÜKLE ---
@@ -109,7 +109,7 @@ const SparePartsView = {
                     SparePartsView.loadForm();
                 });
             });
-        } catch (error) { Notification.error("Modeller yüklenemedi."); }
+        } catch (error) { await Notification.error("Modeller yüklenemedi."); }
     },
 
     // --- ADIM 3: FORM ---
@@ -190,7 +190,6 @@ const SparePartsView = {
             document.getElementById('sparePartForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
 
-                // FormData Hazırlığı
                 const formData = new FormData();
                 formData.append('model_id', state.modelId);
                 formData.append('category_id', document.getElementById('category').value);
@@ -204,29 +203,23 @@ const SparePartsView = {
                 const btn = document.getElementById('save-btn');
                 
                 try {
-                    // Butonu kilitle ve loading yap
                     btn.disabled = true;
                     btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Kaydediliyor...`;
 
-                    // Backend'e gönder
                     await ApiService.postFormData('/spare-parts', formData);
                     
-                    // BAŞARILI MODAL (Burası Çok Önemli)
-                    // await koyuyoruz ki modal'daki 2.5 saniyelik timer bitsin, sonra alt satıra geçsin
-                    await Notification.success("Yedek parça başarıyla sisteme kaydedildi ve kataloğa eklendi.");
-                    
-                    // State'i sıfırla ve Adım 1'e dön
+                    // ✅ Başarı: Önce modal bekle, SONRA yönlendir
+                    await Notification.success('Yedek parça başarıyla sisteme kaydedildi ve kataloğa eklendi.');
                     state = { brandId: null, modelId: null, categoryId: null };
-                    SparePartsView.loadBrands();
-
+                    window.location.hash = '#parts'
                 } catch (error) {
-                    // HATA MODALI
-                    // Backend'den gelen hata mesajını (Validator veya Service hatası) ekrana basar
-                    Notification.error(error.message || "Parça kaydedilirken beklenmedik bir hata oluştu.");
+                    console.error("HATA:", error);
                     
-                    // Butonu eski haline getir ki kullanıcı hatayı düzeltip tekrar denesin
+                    // ❌ alert ve hemen render YOK — sadece modal
                     btn.disabled = false;
                     btn.innerHTML = `<span>Kaydet ve Yayınla</span> <i class="fa-solid fa-cloud-arrow-up"></i>`;
+                    
+                    await Notification.error(error.message || "Parça kaydedilirken beklenmedik bir hata oluştu.");
                 }
             });
         } catch (error) { Notification.error("Form yüklenemedi."); }

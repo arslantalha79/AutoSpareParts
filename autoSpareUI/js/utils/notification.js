@@ -1,9 +1,9 @@
-//hata veya başarılı işlemlerde mesajı dönerken tasarlayacağımız modal
+// Hata veya başarılı işlemlerde mesajı dönerken tasarlayacağımız modal
 
 const Notification = {
     // Hata Modalı
     error: (message, title = 'Hata!') => {
-        return Swal.fire({
+        return window.Swal.fire({
             icon: 'error',
             title: title,
             text: message,
@@ -15,12 +15,12 @@ const Notification = {
 
     // Başarı Modalı
     success: (message, title = 'Başarılı!') => {
-        return Swal.fire({
+        return window.Swal.fire({
             icon: 'success',
             title: title,
             text: message,
             showConfirmButton: false,
-            timer: 2500, //2.5 saniye bekleme
+            timer: 2500, // 2.5 saniye bekleme
             timerProgressBar: true,
             backdrop: `rgba(0,0,0,0.8)`
         });
@@ -28,7 +28,7 @@ const Notification = {
 
     // Uyarı Modalı
     warning: (message, title = 'Dikkat!') => {
-        return Swal.fire({
+        return window.Swal.fire({
             icon: 'warning',
             title: title,
             text: message,

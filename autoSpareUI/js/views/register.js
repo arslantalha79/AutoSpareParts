@@ -68,7 +68,7 @@ const RegisterView = {
 
                 await Notification.success('Kayıt Başarılı! Giriş yapabilirsiniz.');
 
-                // Başarılıysa formu temizle
+                // Başarılı olunca login sayfasına yönlendiriyoruz.
                 window.location.hash = '#login';
 
             } catch (error) {
