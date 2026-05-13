@@ -1,7 +1,7 @@
 const modelService = require('../services/modelService');
 
 class ModelController {
-    
+    //database'deki araç modellerini çekiyoruz
     getAll = async (req, res) => {
         try {
             const models = await modelService.listAllModels();
@@ -11,6 +11,7 @@ class ModelController {
         }
     };
 
+    //markaya ait modelleri listeliyoruz
     getByBrand = async (req, res) => {
         try {
             const { brandId } = req.params;
@@ -21,6 +22,7 @@ class ModelController {
         }
     };
 
+    //yeni bir model oluşturuyoruz.
     create = async (req, res) => {
         try {
             const newModel = await modelService.addNewModel(req.body);

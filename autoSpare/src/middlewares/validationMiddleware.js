@@ -13,19 +13,22 @@ const validateRequest = (req, res, next) => {
     next();
 };
 
-// --- AUTH DOĞRULAMALARI (Silinen kısmı geri getirdik) ---
+//Girdi doğrulamaları yapalım
+
+// --- AUTH DOĞRULAMALARI ---
 const registerValidation = [
     body('fullName').notEmpty().withMessage('Ad Soyad alanı boş bırakılamaz'),
     body('email').isEmail().withMessage('Geçerli bir e-posta adresi giriniz'),
     body('password').isLength({ min: 8 }).withMessage('Şifreniz en az 8 karakter olmalıdır')
 ];
 
+// --- LOGİN DOĞRULAMALARI
 const loginValidation = [
     body('email').isEmail().withMessage('Geçerli bir e-posta adresi giriniz'),
     body('password').notEmpty().withMessage('Şifre alanı boş bırakılamaz')
 ];
 
-// --- SPARE PART DOĞRULAMALARI (Yeni eklediğimiz) ---
+// --- SPARE PART DOĞRULAMALARI ---
 const sparePartValidation = [
     body('name').notEmpty().withMessage('Parça adı boş olamaz'),
     body('category_id').isInt().withMessage('Geçerli bir kategori seçin'),
@@ -35,7 +38,7 @@ const sparePartValidation = [
     body('stock_quantity').isInt({ min: 0 }).withMessage('Stok adedi 0 veya daha büyük olmalı')
 ];
 
-// Hepsini dışarı aktarıyoruz ki route'lar bulabilsin
+//export edip dışarıya açıyoruz.
 module.exports = { 
     validateRequest, 
     registerValidation, 

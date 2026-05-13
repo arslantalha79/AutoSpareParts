@@ -3,6 +3,8 @@ const router = express.Router();
 const sparePartController = require('../controllers/sparePartController');
 const upload = require('../middlewares/uploadMiddleware');
 const { sparePartValidation, validateRequest } = require('../middlewares/validationMiddleware');
+const authorize = require('../middlewares/authMiddleware');
+
 
 /**
  * @swagger
@@ -85,8 +87,91 @@ const { sparePartValidation, validateRequest } = require('../middlewares/validat
  *       404:
  *         description: Yedek parça bulunamadı
  */
-router.post('/', upload.single('image'), sparePartValidation, validateRequest, sparePartController.create);
-router.get('/', sparePartController.getAll);
-router.delete('/:id', sparePartController.delete);
+
+/**
+ * @swagger
+ * /api/spare-parts/{id}:
+ *   put:
+ *     summary: Yedek parça bilgilerini günceller
+ *     tags: [SpareParts]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               sku:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Parça başarıyla güncellendi
+ *
+ * /api/spare-parts/{id}/decrease-stock:
+ *   patch:
+ *     summary: Parçanın stoğunu düşürür
+ *     tags: [SpareParts]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               amount:
+ *                 type: integer
+ *                 example: 1
+ *     responses:
+ *       200:
+ *         description: Stok düşüldü
+ *
+ * /api/spare-parts/{id}/replenish-stock:
+ *   patch:
+ *     summary: Parçaya stok ekler
+ *     tags: [SpareParts]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               amount:
+ *                 type: integer
+ *                 example: 5
+ *     responses:
+ *       200:
+ *         description: Stok eklendi
+ */
+router.post('/', authorize, upload.single('image'), sparePartValidation, validateRequest, sparePartController.create);
+router.get('/',  authorize, sparePartController.getAll);
+router.delete('/:id', authorize, sparePartController.delete);
+router.put('/:id', authorize, sparePartController.update);
+router.patch('/:id/decrease-stock', authorize, sparePartController.decreaseStock);
+router.patch('/:id/replenish-stock', authorize, sparePartController.replenishStock);
 
 module.exports = router;

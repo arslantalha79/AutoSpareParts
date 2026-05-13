@@ -1,12 +1,20 @@
 const BASE_URL = 'http://localhost:3000/api';
 
+const getAuthHeaders = () => {
+    const token = localStorage.getItem('token');
+    return token ? { 'Authorization': `Bearer ${token}` } : {};
+};
+
 const ApiService = {
     // 1. JSON verileri için klasik POST (Login/Register kullanıyor)
-    post: async (endpoint, data) => {
+    post: async (endpoint, data, method = 'POST') => {
         try {
             const response = await fetch(`${BASE_URL}${endpoint}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                method: method,
+                headers: { 
+                    'Content-Type': 'application/json',
+                    ...getAuthHeaders()
+                },
                 body: JSON.stringify(data)
             });
             const result = await response.json();
@@ -23,7 +31,9 @@ const ApiService = {
         try {
             const response = await fetch(`${BASE_URL}${endpoint}`, {
                 method: 'POST',
-                // DİKKAT: Content-Type yok! Tarayıcı FormData olduğunu anlayıp kendi ayarlayacak.
+                headers: {
+                    ...getAuthHeaders()
+                },
                 body: formData
             });
             const result = await response.json();
@@ -38,7 +48,12 @@ const ApiService = {
     // 3. YENİ: Veri çekmek için GET (Marka, Model, Kategori listelemek için)
     get: async (endpoint) => {
         try {
-            const response = await fetch(`${BASE_URL}${endpoint}`);
+            const response = await fetch(`${BASE_URL}${endpoint}`, {
+                method: 'GET',
+                headers: {
+                    ...getAuthHeaders() // YENİ: Get işlemlerine de token eklendi
+                }
+            });
             const result = await response.json();
             if (!response.ok) throw new Error(result.error || 'Veri çekilemedi.');
             return result;

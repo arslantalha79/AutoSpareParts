@@ -40,7 +40,7 @@ const PartDetailView = {
 
             // Resim ve Renk Ayarlamaları
             const imgSrc = part.image_url ? `http://localhost:3000${part.image_url}` : 'https://cdn-icons-png.flaticon.com/512/3202/3202926.png';
-            const isStockOut = part.stock_quantity === 0;
+            const isStockOut = part.stock_quantity <= 0;
             const stockColor = isStockOut ? '#ef4444' : '#10b981'; // Kırmızı : Yeşil
             const stockText = isStockOut ? 'Stok Tükendi' : `${part.stock_quantity} Adet Stokta`;
             const stockIcon = isStockOut ? 'fa-xmark' : 'fa-check';
@@ -89,9 +89,121 @@ const PartDetailView = {
                             </p>
                         </div>
 
+                        <div style="display: flex; gap: 10px; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                            <button id="btn-edit" class="submit-btn" style="flex: 1; background: transparent; border: 1px solid #3b82f6; color: #3b82f6; padding: 10px;">
+                                <i class="fa-solid fa-pen-to-square"></i> Düzenle
+                            </button>
+                            <button id="btn-replenish" class="submit-btn" style="flex: 1; background: transparent; border: 1px solid #10b981; color: #10b981; padding: 10px;">
+                                <i class="fa-solid fa-plus"></i> Stok Yenile
+                            </button>
+                            <button id="btn-decrease" class="submit-btn" style="flex: 1; background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 10px;">
+                                <i class="fa-solid fa-minus"></i> Stok Düş
+                            </button>
+                        </div>
+
                     </div>
                 </div>
             `;
+
+            // --- 1. DÜZENLE (UPDATE) İŞLEMİ ---
+            document.getElementById('btn-edit').addEventListener('click', async () => {
+                const { value: formValues } = await window.Swal.fire({
+                    title: 'Parça Bilgilerini Güncelle',
+                    html: `
+                        <div style="display:flex; flex-direction:column; gap:10px; text-align:left;">
+                            <label style="color: var(--text-muted); font-size: 0.85rem;">Parça Adı</label>
+                            <input id="swal-name" class="swal2-input" style="margin:0; width:100%;" value="${part.name}">
+                            
+                            <label style="color: var(--text-muted); font-size: 0.85rem; margin-top:10px;">SKU (Stok Kodu)</label>
+                            <input id="swal-sku" class="swal2-input" style="margin:0; width:100%;" value="${part.sku}">
+                            
+                            <label style="color: var(--text-muted); font-size: 0.85rem; margin-top:10px;">Fiyat (₺)</label>
+                            <input id="swal-price" type="number" step="0.01" class="swal2-input" style="margin:0; width:100%;" value="${part.price}">
+                            
+                            <label style="color: var(--text-muted); font-size: 0.85rem; margin-top:10px;">Açıklama</label>
+                            <textarea id="swal-desc" class="swal2-textarea" style="margin:0; width:100%; height:80px;">${part.description || ''}</textarea>
+                        </div>
+                    `,
+                    focusConfirm: false,
+                    showCancelButton: true,
+                    confirmButtonText: 'Kaydet',
+                    cancelButtonText: 'İptal',
+                    background: 'var(--secondary-bg)',
+                    color: 'white',
+                    preConfirm: () => {
+                        return {
+                            name: document.getElementById('swal-name').value,
+                            sku: document.getElementById('swal-sku').value,
+                            price: parseFloat(document.getElementById('swal-price').value),
+                            description: document.getElementById('swal-desc').value
+                        };
+                    }
+                });
+
+                if (formValues) {
+                    try {
+                        // PUT isteği atıyoruz
+                        await ApiService.post(`/spare-parts/${partId}`, formValues, 'PUT');
+                        await Notification.success('Parça bilgileri başarıyla güncellendi!');
+                        window.location.reload(); // Sayfayı yenileyip yeni verileri göster
+                    } catch (error) {
+                        Notification.error(error.message);
+                    }
+                }
+            });
+
+            // --- 2. STOK YENİLEME (ARTIŞ) ---
+            document.getElementById('btn-replenish').addEventListener('click', async () => {
+                const { value: amount } = await window.Swal.fire({
+                    title: 'Stok Girişi Yap',
+                    input: 'number',
+                    inputLabel: 'Eklenecek stok miktarını giriniz:',
+                    inputValue: 5,
+                    showCancelButton: true,
+                    confirmButtonText: 'Stoğa Ekle',
+                    cancelButtonText: 'İptal',
+                    background: 'var(--secondary-bg)',
+                    color: 'white'
+                });
+
+                if (amount && parseInt(amount) > 0) {
+                    try {
+                        // PATCH isteği
+                        await ApiService.post(`/spare-parts/${partId}/replenish-stock`, { amount: parseInt(amount) }, 'PATCH');
+                        await Notification.success('Stok başarıyla eklendi!');
+                        window.location.reload();
+                    } catch (error) {
+                        Notification.error(error.message);
+                    }
+                }
+            });
+
+            // --- 3. STOK DÜŞME (AZALIŞ) ---
+            document.getElementById('btn-decrease').addEventListener('click', async () => {
+                const { value: amount } = await window.Swal.fire({
+                    title: 'Stok Çıkışı Yap',
+                    input: 'number',
+                    inputLabel: 'Düşülecek stok miktarını giriniz:',
+                    inputValue: 1,
+                    showCancelButton: true,
+                    confirmButtonText: 'Stoktan Düş',
+                    cancelButtonText: 'İptal',
+                    background: 'var(--secondary-bg)',
+                    color: 'white'
+                });
+
+                if (amount && parseInt(amount) > 0) {
+                    try {
+                        // PATCH isteği
+                        await ApiService.post(`/spare-parts/${partId}/decrease-stock`, { amount: parseInt(amount) }, 'PATCH');
+                        await Notification.success('Stok başarıyla düşüldü!');
+                        window.location.reload();
+                    } catch (error) {
+                        Notification.error(error.message);
+                    }
+                }
+            });
+
         } catch (error) {
             Notification.error("Veriler alınırken bir sorun oluştu.");
         }
