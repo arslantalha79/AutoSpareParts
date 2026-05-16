@@ -20,65 +20,71 @@ const routes = {
 // Sisteme giriş gerektiren özel sayfalar
 const privateRoutes = ['spare-parts', 'dashboard', 'part-detail', 'parts', 'brands'];
 
+// Şu an hangi route render edildi — tekrar render önleme için
+let currentRoute = null;
+
 const checkAuth = () => {
-    return !!localStorage.getItem('token'); // Token varsa true, yoksa false döner
+    return !!localStorage.getItem('token');
 };
 
-const updateNavbar = (currentRoute) => {
+const updateNavbar = (route) => {
     const isAuth = checkAuth();
     document.getElementById('guest-nav').style.display = isAuth ? 'none' : 'flex';
     document.getElementById('user-nav').style.display = isAuth ? 'flex' : 'none';
-
     document.getElementById('sidebar').style.display = isAuth ? 'flex' : 'none';
 
     document.querySelectorAll('.sidebar-link').forEach(link => {
         link.classList.remove('active');
-        if(link.getAttribute('href') === `#${currentRoute}`) {
+        if(link.getAttribute('href') === `#${route}`) {
             link.classList.add('active');
         }
     });
 };
 
 const router = async () => {
-    //reactteki <App></App> tag mantığı
     const app = document.getElementById('app');
-    let rawHash = window.location.hash.replace('#', '') || 'login';
-    let route = rawHash.split('?')[0]; // "?id=5" kısmını atıp sadece sayfa adını alır
+    const rawHash = window.location.hash.replace('#', '') || 'login';
+    const route = rawHash.split('?')[0];
 
-    // 1. GÜVENLİK DUVARI: Giriş yapmamış biri özel sayfaya girmeye çalışıy orsa
+    // 1. GÜVENLİK DUVARI
     if (privateRoutes.includes(route) && !checkAuth()) {
         Notification.warning("Bu sayfayı görüntülemek için giriş yapmalısınız.");
         window.location.hash = '#login';
         return;
     }
 
-    // 2. GEREKSİZ EKRAN ENGELİ: Giriş yapmış biri Login/Register'a gitmeye çalışıyorsa
+    // 2. GİRİŞ YAPMIŞ KULLANICI LOGIN/REGISTER'A GİTMESİN
     if ((route === 'login' || route === 'register') && checkAuth()) {
         window.location.hash = '#dashboard';
         return;
     }
 
-    // İlgili görünümü (View) bul, yoksa login'e at
+    // 3. AYNI ROUTE TEKRAR GELİYORSA RENDER ETME
+    // (SweetAlert kapanışı gibi sahte hashchange'leri engeller)
+    const fullHash = rawHash; // query string dahil tam hash
+    if (currentRoute === fullHash) {
+        return;
+    }
+    currentRoute = fullHash;
+
     const View = routes[route] || routes['login'];
-    // Navbar'ı kullanıcının durumuna göre güncelle
     updateNavbar(route);
 
-    // Sayfayı Ekrana Bas
     app.innerHTML = await View.render();
     if (View.afterRender) {
         await View.afterRender();
     }
 };
 
-// Çıkış Yapma İşlemi
+// Çıkış Yapma
 document.getElementById('logout-btn').addEventListener('click', (e) => {
     e.preventDefault();
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    currentRoute = null; // Logout'ta guard'ı sıfırla
     Notification.success("Başarıyla çıkış yapıldı.");
     window.location.hash = '#login';
 });
 
-// Sayfa yüklendiğinde veya hash (URL) değiştiğinde router'ı çalıştır
 window.addEventListener('hashchange', router);
 window.addEventListener('load', router);

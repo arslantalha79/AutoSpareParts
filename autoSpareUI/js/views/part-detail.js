@@ -17,7 +17,6 @@ const PartDetailView = {
     },
 
     afterRender: async () => {
-        // URL'den "?id=5" değerini yakalıyoruz
         const params = new URLSearchParams(window.location.hash.split('?')[1]);
         const partId = params.get('id');
 
@@ -28,7 +27,6 @@ const PartDetailView = {
         }
 
         try {
-            // Backend'den parçaları çek ve ilgili ID'yi bul
             const parts = await ApiService.get('/spare-parts');
             const part = parts.find(p => p.id == partId);
 
@@ -38,14 +36,12 @@ const PartDetailView = {
                 return;
             }
 
-            // Resim ve Renk Ayarlamaları
             const imgSrc = part.image_url ? `http://localhost:3000${part.image_url}` : 'https://cdn-icons-png.flaticon.com/512/3202/3202926.png';
             const isStockOut = part.stock_quantity <= 0;
-            const stockColor = isStockOut ? '#ef4444' : '#10b981'; // Kırmızı : Yeşil
+            const stockColor = isStockOut ? '#ef4444' : '#10b981';
             const stockText = isStockOut ? 'Stok Tükendi' : `${part.stock_quantity} Adet Stokta`;
             const stockIcon = isStockOut ? 'fa-xmark' : 'fa-check';
 
-            // Ekrana Şıkır Şıkır Basma İşlemi
             document.getElementById('detail-content').innerHTML = `
                 <div style="display: flex; flex-wrap: wrap; gap: 40px; background: rgba(15, 23, 42, 0.7); padding: 40px; border-radius: 20px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
                     
@@ -96,8 +92,11 @@ const PartDetailView = {
                             <button id="btn-replenish" class="submit-btn" style="flex: 1; background: transparent; border: 1px solid #10b981; color: #10b981; padding: 10px;">
                                 <i class="fa-solid fa-plus"></i> Stok Yenile
                             </button>
-                            <button id="btn-decrease" class="submit-btn" style="flex: 1; background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 10px;">
+                            <button id="btn-decrease" class="submit-btn" style="flex: 1; background: transparent; border: 1px solid #f59e0b; color: #f59e0b; padding: 10px;">
                                 <i class="fa-solid fa-minus"></i> Stok Düş
+                            </button>
+                            <button id="btn-delete" class="submit-btn" style="flex: 1; background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 10px;">
+                                <i class="fa-solid fa-trash"></i> Sil
                             </button>
                         </div>
 
@@ -105,7 +104,7 @@ const PartDetailView = {
                 </div>
             `;
 
-            // --- 1. DÜZENLE (UPDATE) İŞLEMİ ---
+            // --- 1. DÜZENLE (UPDATE) ---
             document.getElementById('btn-edit').addEventListener('click', async () => {
                 const { value: formValues } = await window.Swal.fire({
                     title: 'Parça Bilgilerini Güncelle',
@@ -142,17 +141,16 @@ const PartDetailView = {
 
                 if (formValues) {
                     try {
-                        // PUT isteği atıyoruz
                         await ApiService.post(`/spare-parts/${partId}`, formValues, 'PUT');
                         await Notification.success('Parça bilgileri başarıyla güncellendi!');
-                        window.location.reload(); // Sayfayı yenileyip yeni verileri göster
+                        window.location.reload();
                     } catch (error) {
                         Notification.error(error.message);
                     }
                 }
             });
 
-            // --- 2. STOK YENİLEME (ARTIŞ) ---
+            // --- 2. STOK YENİLEME ---
             document.getElementById('btn-replenish').addEventListener('click', async () => {
                 const { value: amount } = await window.Swal.fire({
                     title: 'Stok Girişi Yap',
@@ -168,7 +166,6 @@ const PartDetailView = {
 
                 if (amount && parseInt(amount) > 0) {
                     try {
-                        // PATCH isteği
                         await ApiService.post(`/spare-parts/${partId}/replenish-stock`, { amount: parseInt(amount) }, 'PATCH');
                         await Notification.success('Stok başarıyla eklendi!');
                         window.location.reload();
@@ -178,7 +175,7 @@ const PartDetailView = {
                 }
             });
 
-            // --- 3. STOK DÜŞME (AZALIŞ) ---
+            // --- 3. STOK DÜŞME ---
             document.getElementById('btn-decrease').addEventListener('click', async () => {
                 const { value: amount } = await window.Swal.fire({
                     title: 'Stok Çıkışı Yap',
@@ -194,12 +191,49 @@ const PartDetailView = {
 
                 if (amount && parseInt(amount) > 0) {
                     try {
-                        // PATCH isteği
                         await ApiService.post(`/spare-parts/${partId}/decrease-stock`, { amount: parseInt(amount) }, 'PATCH');
                         await Notification.success('Stok başarıyla düşüldü!');
                         window.location.reload();
                     } catch (error) {
                         Notification.error(error.message);
+                    }
+                }
+            });
+
+            // --- 4. SİL (DELETE) ---
+            document.getElementById('btn-delete').addEventListener('click', async () => {
+                const { isConfirmed } = await window.Swal.fire({
+                    title: 'Parçayı Sil',
+                    html: `
+                        <div style="text-align: center;">
+                            <div style="font-size: 3.5rem; margin-bottom: 15px;">🗑️</div>
+                            <p style="color: #cbd5e1; font-size: 1rem; line-height: 1.6; margin: 0;">
+                                <strong style="color: white;">${part.name}</strong> adlı parçayı silmek istediğinizden emin misiniz?
+                            </p>
+                            <p style="color: #ef4444; font-size: 0.85rem; margin-top: 12px; background: rgba(239,68,68,0.1); padding: 10px; border-radius: 8px; border: 1px solid rgba(239,68,68,0.25);">
+                                <i class="fa-solid fa-triangle-exclamation"></i> Bu işlem geri alınamaz!
+                            </p>
+                        </div>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="fa-solid fa-trash"></i> Evet, Sil',
+                    cancelButtonText: 'Vazgeç',
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: 'transparent',
+                    background: 'var(--secondary-bg)',
+                    color: 'white',
+                    customClass: {
+                        cancelButton: 'swal-cancel-custom'
+                    }
+                });
+
+                if (isConfirmed) {
+                    try {
+                        await ApiService.delete(`/spare-parts/${partId}`);
+                        await Notification.success(`"${part.name}" başarıyla silindi.`);
+                        window.location.hash = '#parts';
+                    } catch (error) {
+                        Notification.error(error.message || 'Parça silinirken bir hata oluştu.');
                     }
                 }
             });

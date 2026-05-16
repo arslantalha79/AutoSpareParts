@@ -209,9 +209,10 @@ const SparePartsView = {
                     await ApiService.postFormData('/spare-parts', formData);
                     
                     // ✅ Başarı: Önce modal bekle, SONRA yönlendir
-                    await Notification.success('Yedek parça başarıyla sisteme kaydedildi ve kataloğa eklendi.');
+                    Notification.success('Yedek parça başarıyla sisteme kaydedildi ve kataloğa eklendi.');
                     state = { brandId: null, modelId: null, categoryId: null };
-                    window.location.hash = '#parts'
+                    window.location.hash = '#parts';
+
                 } catch (error) {
                     console.error("HATA:", error);
                     
@@ -219,7 +220,7 @@ const SparePartsView = {
                     btn.disabled = false;
                     btn.innerHTML = `<span>Kaydet ve Yayınla</span> <i class="fa-solid fa-cloud-arrow-up"></i>`;
                     
-                    await Notification.error(error.message || "Parça kaydedilirken beklenmedik bir hata oluştu.");
+                    Notification.error(error.message || "Parça kaydedilirken beklenmedik bir hata oluştu.");
                 }
             });
         } catch (error) { Notification.error("Form yüklenemedi."); }

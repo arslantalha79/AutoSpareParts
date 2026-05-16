@@ -26,7 +26,7 @@ const ApiService = {
         } catch (error) { throw error; }
     },
 
-    // 2. YENİ: Resim/Dosya yüklemeleri için FormData POST (SparePart kullanacak)
+    // 2. Resim/Dosya yüklemeleri için FormData POST (SparePart kullanıyor)
     postFormData: async (endpoint, formData) => {
         try {
             const response = await fetch(`${BASE_URL}${endpoint}`, {
@@ -45,17 +45,34 @@ const ApiService = {
         } catch (error) { throw error; }
     },
 
-    // 3. YENİ: Veri çekmek için GET (Marka, Model, Kategori listelemek için)
+    // 3. Veri çekmek için GET
     get: async (endpoint) => {
         try {
             const response = await fetch(`${BASE_URL}${endpoint}`, {
                 method: 'GET',
                 headers: {
-                    ...getAuthHeaders() // YENİ: Get işlemlerine de token eklendi
+                    ...getAuthHeaders()
                 }
             });
             const result = await response.json();
             if (!response.ok) throw new Error(result.error || 'Veri çekilemedi.');
+            return result;
+        } catch (error) { throw error; }
+    },
+
+    // 4. Kayıt silmek için DELETE
+    delete: async (endpoint) => {
+        try {
+            const response = await fetch(`${BASE_URL}${endpoint}`, {
+                method: 'DELETE',
+                headers: {
+                    ...getAuthHeaders()
+                }
+            });
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.error || result.message || 'Silme işlemi başarısız.');
+            }
             return result;
         } catch (error) { throw error; }
     }

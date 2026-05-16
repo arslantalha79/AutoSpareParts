@@ -204,7 +204,6 @@ body {
     color: white;
     border: none;
     border-radius: 10px;
-    font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
     transition: var(--transition);
@@ -212,12 +211,10 @@ body {
     justify-content: center;
     align-items: center;
     gap: 10px;
-    box-shadow: 0 4px 14px 0 rgba(249, 115, 22, 0.4);
 }
 
 .submit-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 20px 0 rgba(249, 115, 22, 0.5);
 }
 
 .submit-btn:active {
