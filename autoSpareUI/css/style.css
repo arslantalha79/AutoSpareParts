@@ -335,3 +335,84 @@ body {
     overflow-y: auto; /* Sadece içerik kaysın, sidebar sabit kalsın */
     padding: 2rem 3rem;
 }
+
+
+
+
+/* =========================================
+   RESPONSIVE TASARIM (MOBİL & TABLET)
+========================================= */
+@media screen and (max-width: 768px) {
+    /* 1. Navbar'ı Sıkıştır ve Ortalama */
+    .navbar {
+        flex-direction: column;
+        gap: 15px;
+        padding: 1rem;
+    }
+
+    .nav-links {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* 2. Admin Layout'u Alt Alta Çevir */
+    .app-layout {
+        flex-direction: column;
+        overflow: auto; /* Dış taşıma kilidini mobilde kaldır */
+    }
+
+    /* 3. Sidebar'ı Yatay Menüye Çevir */
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        padding-top: 10px;
+        padding-bottom: 0;
+        z-index: 100;
+        position: sticky; /* Mobilde scroll yaparken üstte kalsın (opsiyonel) */
+        top: 0;
+    }
+
+    .sidebar-menu {
+        flex-direction: row;
+        overflow-x: auto; /* Yatayda kaydırma */
+        gap: 10px;
+        padding: 0 10px 10px 10px; /* Kaydırma çubuğu için boşluk */
+    }
+
+    /* Webkit tarayıcılar (Chrome/Safari) için kaydırma çubuğunu gizle */
+    .sidebar-menu::-webkit-scrollbar {
+        height: 0px; 
+        background: transparent;
+    }
+
+    /* 4. Menü Etiketlerini Gizle */
+    .menu-label {
+        display: none;
+    }
+
+    /* 5. Linkleri Mobilde Düzelt */
+    .sidebar-link {
+        white-space: nowrap; /* Yazılar alt satıra geçmesin */
+        padding: 12px 20px;
+        border-left: none; /* Masaüstündeki sol çizgiyi kaldır */
+        border-bottom: 3px solid transparent; /* Alt çizgi için hazırlık */
+        border-radius: 8px 8px 0 0; /* Üst köşeleri yuvarla */
+    }
+
+    .sidebar-link.active {
+        border-left-color: transparent; /* Mobilde sol çizgi iptal */
+        border-bottom-color: var(--accent-color); /* Aktiflik çizgisi alta gelsin */
+    }
+
+    /* 6. Ana İçerik Paddinglerini Daralt */
+    .main-content {
+        padding: 1.5rem 1rem;
+        overflow-y: visible; /* Mobilde ana kapsayıcı kayar */
+    }
+
+    /* Ekstra: Auth Card (Login/Register) Genişliğini Ayarla */
+    .auth-card {
+        padding: 30px 20px;
+    }
+}

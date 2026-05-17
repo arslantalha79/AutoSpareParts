@@ -8,26 +8,27 @@ const PartsView = {
 
     render: () => {
         return `
-            <div style="max-width: 1400px; margin: 0 auto;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <div style="max-width: 1400px; margin: 0 auto; width: 100%;">
+                
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 30px;">
                     <div>
-                        <h2 style="font-size: 1.8rem; margin-bottom: 5px;">
+                        <h2 style="font-size: clamp(1.4rem, 4vw, 1.8rem); margin-bottom: 5px;">
                             <i class="fa-solid fa-layer-group text-accent"></i> Tüm Yedek Parçalar
                         </h2>
-                        <p style="color: var(--text-muted);">Sistemde kayıtlı tüm parçaları buradan yönetebilirsiniz.</p>
+                        <p style="color: var(--text-muted); font-size: 0.95rem;">Sistemde kayıtlı tüm parçaları buradan yönetebilirsiniz.</p>
                     </div>
-                    <a href="#spare-parts" class="submit-btn" style="width: auto; padding: 10px 20px; font-size: 0.95rem; text-decoration: none;">
+                    
+                    <a href="#spare-parts" class="submit-btn" style="width: auto; padding: 10px 20px; font-size: 0.95rem; text-decoration: none; white-space: nowrap;">
                         <i class="fa-solid fa-plus"></i> Yeni Parça Ekle
                     </a>
                 </div>
 
-                <div id="parts-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px;">
+                <div id="parts-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px;">
                     <div style="grid-column: 1 / -1; text-align:center; padding: 50px;">
                         <i class="fa-solid fa-spinner fa-spin fa-2x"></i> Parçalar Çekiliyor...
                     </div>
                 </div>
 
-                <!-- Pagination -->
                 <div id="pagination-container" style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 40px; flex-wrap: wrap;"></div>
             </div>
         `;
@@ -64,7 +65,6 @@ const PartsView = {
         const endIndex = startIndex + itemsPerPage;
         const pageParts = allParts.slice(startIndex, endIndex);
 
-        // Kartları render et
         let html = '';
         pageParts.forEach(part => {
             const imgSrc = part.image_url
@@ -73,7 +73,7 @@ const PartsView = {
 
             html += `
                 <div class="part-card"
-                    style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; transition: all 0.3s; cursor: pointer;"
+                    style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; transition: all 0.3s; cursor: pointer; display: flex; flex-direction: column;"
                     onclick="window.location.hash='#part-detail?id=${part.id}'"
                     onmouseover="this.style.transform='translateY(-5px)'; this.style.borderColor='var(--accent-color)';"
                     onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='var(--border-color)';">
@@ -84,16 +84,17 @@ const PartsView = {
                             onerror="this.src='https://cdn-icons-png.flaticon.com/512/3202/3202926.png'">
                     </div>
 
-                    <div style="padding: 20px;">
+                    <div style="padding: 20px; display: flex; flex-direction: column; flex: 1;">
                         <div style="font-size: 0.75rem; font-weight: 700; color: #3b82f6; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 0.5px;">
                             ${part.brand_name} ${part.model_name}
                         </div>
                         <h3 style="font-size: 1.1rem; color: white; margin-bottom: 10px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                             ${part.name}
                         </h3>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                        
+                        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-top: auto; gap: 10px;">
                             <span style="font-family: monospace; color: #94a3b8; font-size: 0.85rem;">${part.sku}</span>
-                            <span style="font-size: 1.25rem; font-weight: bold; color: #10b981;">
+                            <span style="font-size: clamp(1.1rem, 3vw, 1.25rem); font-weight: bold; color: #10b981;">
                                 ${parseFloat(part.price).toLocaleString('tr-TR')} ₺
                             </span>
                         </div>
@@ -103,12 +104,10 @@ const PartsView = {
         });
         grid.innerHTML = html;
 
-        // Pagination render et
         if (paginationContainer) {
             PartsView.renderPagination(paginationContainer, totalPages);
         }
 
-        // Sayfanın üstüne smooth scroll
         window.scrollTo({ top: 0, behavior: 'smooth' });
     },
 
@@ -149,7 +148,6 @@ const PartsView = {
             cursor: not-allowed;
         `;
 
-        // Gösterilecek sayfa numaralarını hesapla (max 7 buton)
         const getPageNumbers = () => {
             const delta = 2;
             const range = [];
@@ -167,7 +165,6 @@ const PartsView = {
 
         let html = '';
 
-        // Önceki butonu
         html += `
             <button
                 onclick="${currentPage > 1 ? 'PartsView.goToPage(' + (currentPage - 1) + ')' : ''}"
@@ -179,7 +176,6 @@ const PartsView = {
             </button>
         `;
 
-        // Sayfa numaraları
         const pageNumbers = getPageNumbers();
         pageNumbers.forEach(page => {
             if (page === '...') {
@@ -198,7 +194,6 @@ const PartsView = {
             }
         });
 
-        // Sonraki butonu
         html += `
             <button
                 onclick="${currentPage < totalPages ? 'PartsView.goToPage(' + (currentPage + 1) + ')' : ''}"
@@ -210,12 +205,12 @@ const PartsView = {
             </button>
         `;
 
-        // Sayfa bilgisi
+        // Mobilde sayfa bilgisi metnini ortalamak için text-align eklendi
         html += `
-            <span style="color: #94a3b8; font-size: 0.85rem; margin-left: 8px;">
+            <div style="color: #94a3b8; font-size: 0.85rem; width: 100%; text-align: center; margin-top: 10px;">
                 ${currentPage} / ${totalPages} sayfa
                 <span style="color: #64748b;">(${PartsView.allParts.length} parça)</span>
-            </span>
+            </div>
         `;
 
         container.innerHTML = html;
@@ -229,7 +224,5 @@ const PartsView = {
     }
 };
 
-// Global erişim için (onclick handler'ları için)
 window.PartsView = PartsView;
-
 export default PartsView;

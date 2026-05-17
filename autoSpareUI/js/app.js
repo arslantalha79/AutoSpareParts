@@ -7,6 +7,7 @@ import Notification from './utils/notification.js';
 import PartsView from './views/parts.js';
 import BrandsView from './views/brands.js';
 
+
 const routes = {
     'login': LoginView,
     'register': RegisterView,

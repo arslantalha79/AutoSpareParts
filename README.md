@@ -1,22 +1,22 @@
 # AutoSpareParts - Oto Yedek Parça Yönetim Sistemi
 
-[cite_start]Bu proje, Sistem Analizi ve Tasarımı dersi kapsamında geliştirilmiş, oto yedek parça satışı yapan işletmeler için tasarlanmış web tabanlı bir CRUD (Oluşturma, Okuma, Güncelleme, Silme) uygulamasıdır[cite: 4, 8]. 
+Bu proje, Sistem Analizi ve Tasarımı dersi kapsamında geliştirilmiş, oto yedek parça satışı yapan işletmeler için tasarlanmış web tabanlı bir CRUD (Oluşturma, Okuma, Güncelleme, Silme) uygulamasıdır. 
 
-[cite_start]Sistem, RESTful API sağlayan bir Node.js backend ve kullanıcı etkileşimi için Vanilla Javascript ile geliştirilmiş bir Tek Sayfa Uygulaması (SPA) frontend arayüzünden oluşmaktadır[cite: 8, 23].
+Sistem, RESTful API sağlayan bir Node.js backend ve kullanıcı etkileşimi için Vanilla Javascript ile geliştirilmiş bir Tek Sayfa Uygulaması (SPA) frontend arayüzünden oluşmaktadır.
 
 ## 📌 Mimari ve Tasarım Kararları
 
 Projenin tasarımı ve veritabanı kurgusu, gerçek dünya iş süreçleri (business logic) göz önünde bulundurularak yapılmıştır:
 * **Önceden Yüklenmiş Veriler (Seed Data):** `brands` (Markalar), `models` (Modeller) ve `category` (Kategoriler) gibi statik veriler, bir işletme sahibinin bunları tek tek girmesinin pratik olmaması sebebiyle doğrudan SQL scriptleri ile veritabanına eklenmiştir. Örneğin; sistemde "Renault Megane 4 1.3 TCe" gibi spesifik araç modelleri ve bunlara ait kategoriler varsayılan olarak tanımlıdır.
-* [cite_start]**Dinamik Veriler:** Uygulama üzerinden asıl CRUD işlemleri, işletmenin günlük operasyonlarını yansıtan yedek parçalar ve `User` (Kullanıcı) varlıkları üzerinden yürütülmektedir[cite: 19].
-* [cite_start]**Katmanlı Mimari:** İş mantığı (business logic) doğrudan route'lar içinde değil, controller ve service gibi ayrı katmanlarda izole edilerek modülerlik sağlanmıştır[cite: 30].
+* **Dinamik Veriler:** Uygulama üzerinden asıl CRUD işlemleri, işletmenin günlük operasyonlarını yansıtan yedek parçalar ve `User` (Kullanıcı) varlıkları üzerinden yürütülmektedir.
+* **Katmanlı Mimari:** İş mantığı (business logic) doğrudan route'lar içinde değil, controller ve service gibi ayrı katmanlarda izole edilerek modülerlik sağlanmıştır.
 
 ## 🚀 Teknolojiler
 
-* [cite_start]**Frontend:** Vanilla JavaScript (SPA Mimarisi, sayfa yenilenmeden asenkron `fetch` işlemleri)[cite: 23, 24, 25]. [cite_start]*Not: Proje gereksinimleri doğrultusunda React, Vue veya Angular gibi frameworkler kullanılmamıştır*[cite: 26].
-* [cite_start]**Backend:** Node.js, Express.js[cite: 13].
+* **Frontend:** Vanilla JavaScript (SPA Mimarisi, sayfa yenilenmeden asenkron `fetch` işlemleri). *Not: Proje gereksinimleri doğrultusunda React, Vue veya Angular gibi frameworkler kullanılmamıştır*.
+* **Backend:** Node.js, Express.js.
 * **Veritabanı:** PostgreSQL (pgAdmin 4).
-* [cite_start]**API Dokümantasyonu:** Swagger (OpenAPI 3.0).
+* **API Dokümantasyonu:** Swagger (OpenAPI 3.0).
 
 ## 📁 Proje Yapısı
 
@@ -51,27 +51,31 @@ AUTOSPAREPARTS/
 ⚙️ Kurulum ve Çalıştırma Adımları (Yeniden Üretim)
 Projeyi yerel makinenizde test etmek ve yeniden üretmek için aşağıdaki adımları sırasıyla uygulayınız.  
 
-1. Ön Koşullar
-Node.js (v18 veya üzeri)
+### 1. Ön Koşullar
+* Node.js (v18 veya üzeri)
+* PostgreSQL yüklü ve çalışır durumda olmalıdır.
 
-PostgreSQL yüklü ve çalışır durumda olmalıdır.
+### 2. Veritabanı Kurulumu (Seed Data Dahil)
+Sistemdeki statik verilerin (Markalar, Kategoriler, Modeller) ve test yedek parçalarının görüntülenebilmesi için hazırlanan SQL yedeğinin içeri aktarılması gerekmektedir:
 
-2. Veritabanı Kurulumu
-PostgreSQL'de autospareparts_db adında yeni bir veritabanı oluşturun.
-
-Proje ile birlikte teslim edilen başlangıç SQL dosyasını bu veritabanında çalıştırarak tabloları oluşturun ve statik verileri (marka, model vb.) yükleyin.
+1. PostgreSQL (pgAdmin vb. bir araç) üzerinde `autospareparts_db` adında boş bir veritabanı oluşturun.
+2. Proje dizininde bulunan `database/autospareparts_backup.sql` dosyasını açın.
+3. Bu dosyanın içindeki tüm SQL kodlarını kopyalayıp, oluşturduğunuz `autospareparts_db` veritabanında açacağınız bir **Query Tool (Sorgu Aracı)** penceresine yapıştırın ve çalıştırın.
+   * *(Alternatif olarak pgAdmin üzerinden veritabanına sağ tıklayıp "Restore" diyerek bu dosyayı da seçebilirsiniz.)*
+4. Bu işlem; gerekli tüm tabloları oluşturacak ve `brands`, `category`, `models` ile test verilerini içeren `sparepart` kayıtlarını sisteme otomatik olarak yükleyecektir.
 
 3. Backend Kurulumu
 Terminalden autoSpare klasörüne gidin:
 
 Bash
-
 cd autoSpare
 Gerekli bağımlılıkları yükleyin:
 
 Bash
-
 npm install
+
+Bunu yaptığınız takdirde autoSpare klasöründe bir node_modules klasörü oluşacaktır. Kontrol ediniz.
+
 autoSpare klasörü içinde bir .env dosyası oluşturun ve veritabanı bilgilerinizi girin:
 
 Kod snippet'i
@@ -83,18 +87,16 @@ DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=autospareparts_db
 JWT_SECRET=<gizli_anahtarınız>
+
 Sunucuyu başlatın:
 
 Bash
-
-npm start
+npm run dev
 Sunucu varsayılan olarak http://localhost:3000 adresinde çalışacaktır.
 
 4. Frontend Kurulumu
 Frontend Vanilla JS ile yazıldığı için ekstra bir derleme adımına ihtiyaç duymaz.
-
 autoSpareUI klasörünü açın.
-
 index.html dosyasını VS Code üzerinden "Live Server" eklentisiyle veya doğrudan bir modern web tarayıcısında açarak arayüze erişebilirsiniz.
 
 📖 API Dokümantasyonu (Swagger)

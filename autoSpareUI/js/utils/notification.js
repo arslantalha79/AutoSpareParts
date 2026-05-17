@@ -7,6 +7,7 @@ const Notification = {
             icon: 'error',
             title: title,
             text: message,
+            timer: 2500,
             confirmButtonText: 'Tamam',
             confirmButtonColor: '#f97316',
             backdrop: `rgba(0,0,0,0.8)` 

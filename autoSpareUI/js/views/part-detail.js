@@ -5,8 +5,8 @@ const PartDetailView = {
     render: () => {
         return `
             <div style="max-width: 1000px; margin: 0 auto; width: 100%;">
-                <a href="#dashboard" class="nav-link-btn" style="display: inline-flex; margin-bottom: 20px; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border-color); width: fit-content;">
-                    <i class="fa-solid fa-arrow-left"></i> Panele Dön
+                <a href="#parts" class="nav-link-btn" style="display: inline-flex; margin-bottom: 20px; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border-color); width: fit-content;">
+                    <i class="fa-solid fa-arrow-left"></i> Parçalara Dön
                 </a>
                 
                 <div id="detail-content">
@@ -42,14 +42,15 @@ const PartDetailView = {
             const stockText = isStockOut ? 'Stok Tükendi' : `${part.stock_quantity} Adet Stokta`;
             const stockIcon = isStockOut ? 'fa-xmark' : 'fa-check';
 
+            // MOBİL UYUM: padding ve gap değerleri clamp ile esnekleştirildi
             document.getElementById('detail-content').innerHTML = `
-                <div style="display: flex; flex-wrap: wrap; gap: 40px; background: rgba(15, 23, 42, 0.7); padding: 40px; border-radius: 20px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                <div style="display: flex; flex-wrap: wrap; gap: clamp(20px, 4vw, 40px); background: rgba(15, 23, 42, 0.7); padding: clamp(20px, 5vw, 40px); border-radius: 20px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
                     
-                    <div style="flex: 1; min-width: 300px; display: flex; justify-content: center; align-items: center; background: rgba(255,255,255,0.02); padding: 30px; border-radius: 16px; border: 1px dashed var(--border-color);">
+                    <div style="flex: 1; min-width: 250px; display: flex; justify-content: center; align-items: center; background: rgba(255,255,255,0.02); padding: clamp(15px, 4vw, 30px); border-radius: 16px; border: 1px dashed var(--border-color);">
                         <img src="${imgSrc}" style="max-width: 100%; max-height: 350px; object-fit: contain; filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.5)); transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                     </div>
 
-                    <div style="flex: 1.2; min-width: 300px; display: flex; flex-direction: column; gap: 20px;">
+                    <div style="flex: 1.2; min-width: 250px; display: flex; flex-direction: column; gap: 20px;">
                         
                         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                             <span style="background: rgba(249, 115, 22, 0.15); color: var(--accent-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; border: 1px solid rgba(249, 115, 22, 0.3);">
@@ -61,17 +62,17 @@ const PartDetailView = {
                         </div>
                         
                         <div>
-                            <h1 style="font-size: 2.2rem; color: white; margin: 0; line-height: 1.2;">${part.name}</h1>
+                            <h1 style="font-size: clamp(1.6rem, 5vw, 2.2rem); color: white; margin: 0; line-height: 1.2;">${part.name}</h1>
                             <div style="font-family: monospace; color: var(--text-muted); font-size: 1rem; margin-top: 8px;">
                                 <i class="fa-solid fa-barcode"></i> SKU: ${part.sku}
                             </div>
                         </div>
                         
-                        <div style="background: var(--primary-color); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                            <div style="font-size: 2.5rem; font-weight: 700; color: white;">
-                                ${parseFloat(part.price).toLocaleString('tr-TR')} <span style="font-size: 1.5rem; color: var(--accent-color);">₺</span>
+                        <div style="background: var(--primary-color); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-wrap: wrap; gap: 15px; justify-content: space-between; align-items: center; margin-top: 10px;">
+                            <div style="font-size: clamp(2rem, 6vw, 2.5rem); font-weight: 700; color: white;">
+                                ${parseFloat(part.price).toLocaleString('tr-TR')} <span style="font-size: clamp(1.2rem, 4vw, 1.5rem); color: var(--accent-color);">₺</span>
                             </div>
-                            <div style="background: ${stockColor}15; color: ${stockColor}; padding: 10px 18px; border-radius: 10px; border: 1px solid ${stockColor}40; font-weight: 600; font-size: 1rem;">
+                            <div style="background: ${stockColor}15; color: ${stockColor}; padding: 10px 18px; border-radius: 10px; border: 1px solid ${stockColor}40; font-weight: 600; font-size: 1rem; text-align: center;">
                                 <i class="fa-solid ${stockIcon}"></i> ${stockText}
                             </div>
                         </div>
@@ -85,17 +86,17 @@ const PartDetailView = {
                             </p>
                         </div>
 
-                        <div style="display: flex; gap: 10px; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 20px;">
-                            <button id="btn-edit" class="submit-btn" style="flex: 1; background: transparent; border: 1px solid #3b82f6; color: #3b82f6; padding: 10px;">
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                            <button id="btn-edit" class="submit-btn" style="flex: 1 1 calc(50% - 10px); min-width: 130px; background: transparent; border: 1px solid #3b82f6; color: #3b82f6; padding: 10px;">
                                 <i class="fa-solid fa-pen-to-square"></i> Düzenle
                             </button>
-                            <button id="btn-replenish" class="submit-btn" style="flex: 1; background: transparent; border: 1px solid #10b981; color: #10b981; padding: 10px;">
+                            <button id="btn-replenish" class="submit-btn" style="flex: 1 1 calc(50% - 10px); min-width: 130px; background: transparent; border: 1px solid #10b981; color: #10b981; padding: 10px;">
                                 <i class="fa-solid fa-plus"></i> Stok Yenile
                             </button>
-                            <button id="btn-decrease" class="submit-btn" style="flex: 1; background: transparent; border: 1px solid #f59e0b; color: #f59e0b; padding: 10px;">
+                            <button id="btn-decrease" class="submit-btn" style="flex: 1 1 calc(50% - 10px); min-width: 130px; background: transparent; border: 1px solid #f59e0b; color: #f59e0b; padding: 10px;">
                                 <i class="fa-solid fa-minus"></i> Stok Düş
                             </button>
-                            <button id="btn-delete" class="submit-btn" style="flex: 1; background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 10px;">
+                            <button id="btn-delete" class="submit-btn" style="flex: 1 1 calc(50% - 10px); min-width: 130px; background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 10px;">
                                 <i class="fa-solid fa-trash"></i> Sil
                             </button>
                         </div>
@@ -111,16 +112,16 @@ const PartDetailView = {
                     html: `
                         <div style="display:flex; flex-direction:column; gap:10px; text-align:left;">
                             <label style="color: var(--text-muted); font-size: 0.85rem;">Parça Adı</label>
-                            <input id="swal-name" class="swal2-input" style="margin:0; width:100%;" value="${part.name}">
+                            <input id="swal-name" class="swal2-input" style="margin:0; width:100%; box-sizing: border-box;" value="${part.name}">
                             
                             <label style="color: var(--text-muted); font-size: 0.85rem; margin-top:10px;">SKU (Stok Kodu)</label>
-                            <input id="swal-sku" class="swal2-input" style="margin:0; width:100%;" value="${part.sku}">
+                            <input id="swal-sku" class="swal2-input" style="margin:0; width:100%; box-sizing: border-box;" value="${part.sku}">
                             
                             <label style="color: var(--text-muted); font-size: 0.85rem; margin-top:10px;">Fiyat (₺)</label>
-                            <input id="swal-price" type="number" step="0.01" class="swal2-input" style="margin:0; width:100%;" value="${part.price}">
+                            <input id="swal-price" type="number" step="0.01" class="swal2-input" style="margin:0; width:100%; box-sizing: border-box;" value="${part.price}">
                             
                             <label style="color: var(--text-muted); font-size: 0.85rem; margin-top:10px;">Açıklama</label>
-                            <textarea id="swal-desc" class="swal2-textarea" style="margin:0; width:100%; height:80px;">${part.description || ''}</textarea>
+                            <textarea id="swal-desc" class="swal2-textarea" style="margin:0; width:100%; height:80px; box-sizing: border-box;">${part.description || ''}</textarea>
                         </div>
                     `,
                     focusConfirm: false,
