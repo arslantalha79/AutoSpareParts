@@ -35,15 +35,17 @@ AUTOSPAREPARTS/
 │   │   └── server.js           # Uygulama başlangıç noktası
 │   ├── uploads/                # Yüklenen parça ve marka görselleri
 │   └── .env                    # Çevresel değişkenler
-└── autoSpareUI/                # Frontend (Vanilla JS SPA)
-    ├── assets/                 # Görseller vb. statik dosyalar
-    ├── css/                    # Stil dosyaları
-    ├── js/
-    │   ├── services/           # API çağrılarını yapan servisler (fetch)
-    │   ├── utils/              # UI yardımcı fonksiyonları
-    │   └── views/              # Dinamik render edilen sayfa görünümleri
-    ├── app.js                  # Frontend SPA yönlendirme (routing) mantığı
-    └── index.html              # Ana HTML şablonu
+├── autoSpareUI/                # Frontend (Vanilla JS SPA)
+│   ├── assets/                 # Görseller vb. statik dosyalar
+│   ├── css/                    # Stil dosyaları
+│   ├── js/
+│   │   ├── services/           # API çağrılarını yapan servisler (fetch)
+│   │   ├── utils/              # UI yardımcı fonksiyonları
+│   │   └── views/              # Dinamik render edilen sayfa görünümleri
+│   ├── app.js                  # Frontend SPA yönlendirme (routing) mantığı
+│   └── index.html              # Ana HTML şablonu
+└── database/                   # Veritabanı yedek dosyaları
+    └── autospareparts_backup.sql # PostgreSQL veritabanı yedeği (şema ve statik veriler)
 
 
 
